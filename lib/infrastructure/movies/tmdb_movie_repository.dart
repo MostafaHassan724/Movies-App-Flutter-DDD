@@ -1,7 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
-import 'package:movies/infrastructure/core/connection_checker.dart';
 
 import '../../domain/core/failures.dart';
 import '../../domain/movies/i_movies_repository.dart';
@@ -10,11 +8,11 @@ import '../../domain/movies/tmdb_response.dart';
 
 class TMDBMoviesRepository implements IMoviesRepository {
   TMDBMoviesRepository(
-      this._client, this._apiKey, this._internetConnectionChecker);
-
+    this._client,
+    this._apiKey,
+  );
   final Dio _client;
   final String _apiKey;
-  final InternetConnectionChecker _internetConnectionChecker;
 
   @override
   Future<Either<Failure, List<Movie>>> getPopularMovies({
@@ -23,9 +21,6 @@ class TMDBMoviesRepository implements IMoviesRepository {
     CancelToken? cancelToken,
   }) async {
     try {
-      if (await _internetConnectionChecker.isNotConnected) {
-        return left(NoConnectionFailure(message: 'No internet connection'));
-      }
       final url = Uri(
         scheme: "https",
         host: "api.themoviedb.org",
@@ -62,9 +57,6 @@ class TMDBMoviesRepository implements IMoviesRepository {
     CancelToken? cancelToken,
   }) async {
     try {
-      if (await _internetConnectionChecker.isNotConnected) {
-        return left(NoConnectionFailure(message: 'No internet connection'));
-      }
       final url = Uri(
         scheme: "https",
         host: "api.themoviedb.org",
@@ -98,9 +90,6 @@ class TMDBMoviesRepository implements IMoviesRepository {
   Future<Either<Failure, Movie>> fetchMovieByID(
       {required int movieID, CancelToken? cancelToken}) async {
     try {
-      if (await _internetConnectionChecker.isNotConnected) {
-        return left(NoConnectionFailure(message: 'No internet connection'));
-      }
       final url = Uri(
         scheme: "https",
         host: "api.themoviedb.org",

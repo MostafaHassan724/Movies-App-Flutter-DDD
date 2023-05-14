@@ -21,12 +21,14 @@ class MoviesControllerNotifier extends AutoDisposeAsyncNotifier<void> {
   }
 
   Future<void> searchingMovies(
+    String query,
     int page,
   ) async {
     final moviesRepository = ref.read(tmdbMovieRepositoryProvider);
     state = const AsyncLoading();
     state = await AsyncValue.guard(
       () => moviesRepository.searchMovies(
+        query: query,
         page: page,
       ),
     );

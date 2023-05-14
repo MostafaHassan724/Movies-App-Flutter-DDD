@@ -53,7 +53,7 @@ class AppUserDTO extends Equatable {
       password: user.password.getValueSafely(),
       username: user.username.getValueSafely(),
       gender: user.gender.name,
-      dateOfBirth: DateFormat.yMMMMd().format(user.dateOfBirth), //needs check
+      dateOfBirth: DateFormat.yMd().format(user.dateOfBirth), //needs check
     );
   }
 

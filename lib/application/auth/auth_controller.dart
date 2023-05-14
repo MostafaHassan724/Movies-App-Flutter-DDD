@@ -9,8 +9,8 @@ class AuthControllerNotifier extends AutoDisposeAsyncNotifier<void> {
   @override
   FutureOr<void> build() {}
 
-  Future<void> signUpWithEmailAndPasswordPressed({
-    required String emailStr,
+  Future<void> signUpWithEmailAndPassword({
+    required String emailAddressStr,
     required String passwordStr,
     required String usernameStr,
     required String gender,
@@ -20,7 +20,7 @@ class AuthControllerNotifier extends AutoDisposeAsyncNotifier<void> {
     state = const AsyncLoading();
     state =
         await AsyncValue.guard(() => authRepository.signUpWithEmailAndPassword(
-              emailAddress: EmailAddress(emailStr),
+              emailAddress: EmailAddress(emailAddressStr),
               password: Password(passwordStr),
               username: Username(usernameStr),
               gender: Gender.values.firstWhere(
@@ -29,26 +29,26 @@ class AuthControllerNotifier extends AutoDisposeAsyncNotifier<void> {
             ));
   }
 
-  Future<void> signInWithEmailAndPasswordPressed(
-    String emailStr,
-    String passwordStr,
-  ) async {
+  Future<void> signInWithEmailAndPassword({
+    required String emailAddressStr,
+    required String passwordStr,
+  }) async {
     final authRepository = ref.read(firebaseAuthRepositoryProvider);
     state = const AsyncLoading();
     state =
         await AsyncValue.guard(() => authRepository.signInWithEmailAndPassword(
-              emailAddress: EmailAddress(emailStr),
+              emailAddress: EmailAddress(emailAddressStr),
               password: Password(passwordStr),
             ));
   }
 
-  Future<void> signInWithGooglePressed() async {
+  Future<void> signInWithGoogle() async {
     final authRepository = ref.read(firebaseAuthRepositoryProvider);
     state = const AsyncLoading();
     state = await AsyncValue.guard(() => authRepository.signInWithGoogle());
   }
 
-  Future<void> singOutPressed() async {
+  Future<void> singOut() async {
     final authRepository = ref.read(firebaseAuthRepositoryProvider);
     state = const AsyncLoading();
     state = await AsyncValue.guard(() => authRepository.signOut());

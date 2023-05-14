@@ -9,7 +9,9 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:movies/application/movies/movies_controller.dart';
 import 'package:movies/application/settings/theme_provider.dart';
 import 'package:movies/domain/auth/i_auth_repository.dart';
+import 'package:movies/domain/auth/value_objects.dart';
 import 'package:movies/domain/movies/i_movies_repository.dart';
+import 'package:movies/firebase_options.dart';
 import 'package:movies/infrastructure/auth/firebase_auth_repository.dart';
 import 'package:movies/infrastructure/movies/tmdb_movie_repository.dart';
 
@@ -35,14 +37,14 @@ final firebaseFirestoreProvider = Provider<FirebaseFirestore>((ref) {
 });
 
 final googleSignInProvider = Provider<GoogleSignIn>((ref) {
-  return GoogleSignIn();
+  return GoogleSignIn(
+      clientId: DefaultFirebaseOptions.currentPlatform.iosClientId);
 });
 
 final tmdbMovieRepositoryProvider = Provider<IMoviesRepository>((ref) {
   return TMDBMoviesRepository(
     ref.watch(dioProvider),
     dotenv.get('TMDB_KEY'),
-    ref.watch(internetConnectionCheckerProvider),
   );
 });
 
@@ -51,7 +53,6 @@ final firebaseAuthRepositoryProvider = Provider<IAuthRepository>((ref) {
     ref.watch(firebaseAuthProvider),
     ref.watch(firebaseFirestoreProvider),
     ref.watch(googleSignInProvider),
-    ref.watch(internetConnectionCheckerProvider),
   );
 });
 
@@ -64,6 +65,16 @@ final authControllerNotifierProvider =
 final moviesControllerNotifierProvider =
     AutoDisposeAsyncNotifierProvider<MoviesControllerNotifier, void>(
         MoviesControllerNotifier.new);
+
+// UI (editing) providers
+
+final emailAddressTextProvider =
+    StateProvider<EmailAddress>((ref) => EmailAddress(''));
+final passwordTextProvider = StateProvider<Password>((ref) => Password(''));
+final usernameTextProvider = StateProvider<Username>((ref) => Username(''));
+final genderEnumProvider = StateProvider<Gender>((ref) => Gender.male);
+final dateOfBirthProvider =
+    StateProvider<DateTime>((ref) => DateTime.utc(2023, 5, 10));
 
 // Settings providers
 

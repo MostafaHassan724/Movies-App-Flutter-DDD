@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
-import 'package:movies/infrastructure/core/connection_checker.dart';
 
 import '../../domain/auth/app_user.dart';
 import '../../domain/auth/i_auth_repository.dart';
@@ -16,12 +14,10 @@ class FirebaseAuthRepository implements IAuthRepository {
     this._firebaseAuth,
     this._firebaseFirestore,
     this._googleSignIn,
-    this._internetConnectionChecker,
   );
   final FirebaseAuth _firebaseAuth;
   final FirebaseFirestore _firebaseFirestore;
   final GoogleSignIn _googleSignIn;
-  final InternetConnectionChecker _internetConnectionChecker;
 
   @override
   Future<Either<Failure, Unit>> signUpWithEmailAndPassword({
@@ -32,13 +28,12 @@ class FirebaseAuthRepository implements IAuthRepository {
     required DateTime dateOfBirth,
   }) async {
     try {
-      if (await _internetConnectionChecker.isNotConnected) {
-        return left(NoConnectionFailure(message: 'No Internet connection'));
-      }
       final emailStr = emailAddress.getValueSafely();
       final passwordStr = password.getValueSafely();
       final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
-          email: emailStr, password: passwordStr);
+        email: emailStr,
+        password: passwordStr,
+      );
       final appUserDTO = AppUserDTO.fromDomain(
         user: AppUser(
           id: UniqueID.fromAlreadyExistingID(id: userCredential.user!.uid),
@@ -50,7 +45,7 @@ class FirebaseAuthRepository implements IAuthRepository {
         ),
       );
       final users = _firebaseFirestore.collection('users');
-      users.doc(appUserDTO.id).set(appUserDTO.toJson());
+      await users.doc(appUserDTO.id).set(appUserDTO.toJson());
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
         return left(EmailAlreadyInUseFailure(message: 'Email already in use'));
@@ -67,13 +62,12 @@ class FirebaseAuthRepository implements IAuthRepository {
     required Password password,
   }) async {
     try {
-      if (await _internetConnectionChecker.isNotConnected) {
-        return left(NoConnectionFailure(message: 'No Internet connection'));
-      }
       final emailStr = emailAddress.getValueSafely();
       final passwordStr = password.getValueSafely();
       await _firebaseAuth.signInWithEmailAndPassword(
-          email: emailStr, password: passwordStr);
+        email: emailStr,
+        password: passwordStr,
+      );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found' || e.code == 'wrong-password') {
         return left(InvalidEmailAndPasswordFailure(
@@ -88,19 +82,24 @@ class FirebaseAuthRepository implements IAuthRepository {
   @override
   Future<Either<Failure, Unit>> signInWithGoogle() async {
     try {
-      if (await _internetConnectionChecker.isNotConnected) {
-        return left(NoConnectionFailure(message: 'No Internet connection'));
-      }
       final googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
-        return left(AbortedSignInByUserFailure(message: 'Sign in stopped'));
+        return left(AbortedSignInByUserFailure(message: 'Sign in aborted'));
       }
       final googleAuth = await googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
         idToken: googleAuth.idToken,
         accessToken: googleAuth.accessToken,
       );
-      await _firebaseAuth.signInWithCredential(credential);
+      final userCredential =
+          await _firebaseAuth.signInWithCredential(credential);
+      final users = _firebaseFirestore.collection('users');
+      // Check if the user is new or existing
+      if (userCredential.additionalUserInfo!.isNewUser) {
+        await users.doc(userCredential.user!.uid).set({
+          'email_address': userCredential.user!.email,
+        });
+      }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'account-exists-with-different-credential') {
         return left(EmailAlreadyInUseFailure(message: 'Email already in use'));
@@ -115,5 +114,6 @@ class FirebaseAuthRepository implements IAuthRepository {
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
     await _googleSignIn.signOut();
+    await _firebaseFirestore.terminate();
   }
 }

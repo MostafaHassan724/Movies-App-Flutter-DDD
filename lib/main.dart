@@ -4,7 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:movies/application/core/providers.dart';
-import 'package:movies/presentation/screens/auth_screen.dart';
+import 'package:movies/presentation/screens/sign_up_screen.dart';
 
 import 'firebase_options.dart';
 
@@ -26,9 +26,9 @@ class MyApp extends ConsumerWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerConfig: _router,
-      routeInformationParser: _router.routeInformationParser,
-      routerDelegate: _router.routerDelegate,
-      routeInformationProvider: _router.routeInformationProvider,
+      // routeInformationParser: _router.routeInformationParser,
+      // routerDelegate: _router.routerDelegate,
+      // routeInformationProvider: _router.routeInformationProvider,
       theme: theme,
     );
   }
@@ -39,7 +39,7 @@ final GoRouter _router = GoRouter(
     GoRoute(
       path: '/',
       builder: (BuildContext context, GoRouterState state) {
-        return AuthScreen();
+        return const SignUpScreen();
       },
     ),
   ],

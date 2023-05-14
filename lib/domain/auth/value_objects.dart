@@ -34,8 +34,8 @@ class EmailAddress extends ValueObject<String> {
   @override
   final Either<Failure, String> value;
 
-  factory EmailAddress(String emailStr) {
-    return EmailAddress._(validateEmailAddress(emailStr));
+  factory EmailAddress(String emailAddressStr) {
+    return EmailAddress._(validateEmailAddress(emailAddressStr));
   }
 }
 
