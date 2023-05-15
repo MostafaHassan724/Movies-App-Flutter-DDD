@@ -47,25 +47,29 @@ class AppUserDTO extends Equatable {
   }
 
   factory AppUserDTO.fromDomain({required AppUser user}) {
+    final dateOfBirthFormatted =
+        DateFormat('dd/MM/yyyy').format(user.dateOfBirth); //needs check
     return AppUserDTO(
       id: user.id.getValueSafely(),
       emailAddress: user.emailAddress.getValueSafely(),
       password: user.password.getValueSafely(),
       username: user.username.getValueSafely(),
       gender: user.gender.name,
-      dateOfBirth: DateFormat.yMd().format(user.dateOfBirth), //needs check
+      dateOfBirth: dateOfBirthFormatted,
     );
   }
 
   AppUser toDomain() {
+    final genderChosen = Gender.values
+        .firstWhere((predefinedGender) => predefinedGender.name == gender);
+    final dateOfBirthParsed = DateFormat('dd/MM/yyyy').parse(dateOfBirth);
     return AppUser(
       id: UniqueID.fromAlreadyExistingID(id: id),
       emailAddress: EmailAddress(emailAddress),
       password: Password(password),
       username: Username(username),
-      gender: Gender.values
-          .firstWhere((predefinedGender) => predefinedGender.name == gender),
-      dateOfBirth: DateTime.parse(dateOfBirth),
+      gender: genderChosen,
+      dateOfBirth: dateOfBirthParsed,
     );
   }
 

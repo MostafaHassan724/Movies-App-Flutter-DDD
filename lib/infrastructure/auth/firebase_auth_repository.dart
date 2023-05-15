@@ -48,9 +48,9 @@ class FirebaseAuthRepository implements IAuthRepository {
       await users.doc(appUserDTO.id).set(appUserDTO.toJson());
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
-        return left(EmailAlreadyInUseFailure(message: 'Email already in use'));
+        return left(EmailAlreadyInUseFailure());
       } else {
-        return left(ServerFailure(message: 'Server Error'));
+        return left(ServerFailure());
       }
     }
     return right(unit);
@@ -70,10 +70,9 @@ class FirebaseAuthRepository implements IAuthRepository {
       );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found' || e.code == 'wrong-password') {
-        return left(InvalidEmailAndPasswordFailure(
-            message: 'Invalid email and password combination'));
+        return left(InvalidEmailAndPasswordFailure());
       } else {
-        return left(ServerFailure(message: 'Server Error'));
+        return left(ServerFailure());
       }
     }
     return right(unit);
@@ -84,7 +83,7 @@ class FirebaseAuthRepository implements IAuthRepository {
     try {
       final googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
-        return left(AbortedSignInByUserFailure(message: 'Sign in aborted'));
+        return left(AbortedSignInByUserFailure());
       }
       final googleAuth = await googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
@@ -102,9 +101,9 @@ class FirebaseAuthRepository implements IAuthRepository {
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'account-exists-with-different-credential') {
-        return left(EmailAlreadyInUseFailure(message: 'Email already in use'));
+        return left(EmailAlreadyInUseFailure());
       } else {
-        return left(ServerFailure(message: 'Server Error'));
+        return left(ServerFailure());
       }
     }
     return right(unit);

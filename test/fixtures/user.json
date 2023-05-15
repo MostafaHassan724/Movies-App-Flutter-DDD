@@ -1,0 +1,8 @@
+{
+    "id": "abcd123456",
+    "email_address": "newuser@outlook.com",
+    "password": "Pass12345",
+    "username": "new_user1",
+    "gender": "male",
+    "date_of_birth": "20/01/2000"
+}

@@ -12,6 +12,6 @@ abstract class ValueObject<T> extends Equatable {
   /// Extracts the value safely to be used in other layers.
   T getValueSafely() {
     return value.fold(
-        (_) => throw UnimplementedError('Check value validation.'), id);
+        (_) => throw UnimplementedError('check value validation'), id);
   }
 }

@@ -1,75 +1,37 @@
 import 'package:equatable/equatable.dart';
 
 abstract class Failure extends Equatable {
-  String get message;
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [];
+
+  @override
+  bool? get stringify => true;
 }
 
 // Common failures
 
-class ServerFailure extends Failure {
-  ServerFailure({required this.message});
-  @override
-  final String message;
-}
+class ServerFailure extends Failure {}
 
-class NoConnectionFailure extends Failure {
-  NoConnectionFailure({required this.message});
-  @override
-  final String message;
-}
+class NoConnectionFailure extends Failure {}
 
 // Value objects validaiton failures
 
-class InvalidEmailFailure extends Failure {
-  InvalidEmailFailure({required this.message});
-  @override
-  final String message;
-}
+class InvalidEmailFailure extends Failure {}
 
-class WeakPasswordFailure extends Failure {
-  WeakPasswordFailure({required this.message});
-  @override
-  final String message;
-}
+class WeakPasswordFailure extends Failure {}
 
-class InvalidUsernameFailure extends Failure {
-  InvalidUsernameFailure({required this.message});
-  @override
-  final String message;
-}
+class InvalidUsernameFailure extends Failure {}
 
 // Authentication failures
 
-class InvalidEmailAndPasswordFailure extends Failure {
-  InvalidEmailAndPasswordFailure({required this.message});
-  @override
-  final String message;
-}
+class InvalidEmailAndPasswordFailure extends Failure {}
 
-class EmailAlreadyInUseFailure extends Failure {
-  EmailAlreadyInUseFailure({required this.message});
-  @override
-  final String message;
-}
+class EmailAlreadyInUseFailure extends Failure {}
 
-class AbortedSignInByUserFailure extends Failure {
-  AbortedSignInByUserFailure({required this.message});
-  @override
-  final String message;
-}
+class AbortedSignInByUserFailure extends Failure {}
 
 // Movies retrieval failures
 
-class MovieIDNotFoundFailure extends Failure {
-  MovieIDNotFoundFailure({required this.message});
-  @override
-  final String message;
-}
+class MovieIDNotFoundFailure extends Failure {}
 
-class EmptySearchListFailure extends Failure {
-  EmptySearchListFailure({required this.message});
-  @override
-  final String message;
-}
+class EmptySearchListFailure extends Failure {}

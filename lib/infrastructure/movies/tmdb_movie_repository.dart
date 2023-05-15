@@ -36,14 +36,13 @@ class TMDBMoviesRepository implements IMoviesRepository {
       if (response.statusCode == 200) {
         final results = TMDBResponse.fromJson(response.data).results;
         if (results!.isEmpty) {
-          return left(
-              EmptySearchListFailure(message: 'No search results found'));
+          return left(EmptySearchListFailure());
         } else {
           return right(results);
         }
       }
     } catch (_) {
-      return left(ServerFailure(message: 'Server Error'));
+      return left(ServerFailure());
     }
     return right(List.empty());
   }
@@ -72,14 +71,13 @@ class TMDBMoviesRepository implements IMoviesRepository {
       if (response.statusCode == 200) {
         final results = TMDBResponse.fromJson(response.data).results;
         if (results!.isEmpty) {
-          return left(
-              EmptySearchListFailure(message: 'No search results found'));
+          return left(EmptySearchListFailure());
         } else {
           return right(results);
         }
       }
     } catch (_) {
-      return left(ServerFailure(message: 'Server Error'));
+      return left(ServerFailure());
     }
     return right(List.empty());
   }
@@ -103,10 +101,10 @@ class TMDBMoviesRepository implements IMoviesRepository {
         final result = Movie.fromJson(response.data);
         return right(result);
       } else {
-        return left(MovieIDNotFoundFailure(message: 'Movie is not found'));
+        return left(MovieIDNotFoundFailure());
       }
     } catch (_) {
-      return left(ServerFailure(message: 'Server Error'));
+      return left(ServerFailure());
     }
   }
 }
